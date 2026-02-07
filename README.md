@@ -1,31 +1,51 @@
 # Automation Hub
 
-Automation Hub is a desktop application built with Python that combines multiple practical tools in one place.  
+Automation Hub is a desktop application built with Python that combines multiple practical automation tools in one place.  
 The goal of this project is to apply real-world automation techniques such as web requests, file handling, scraping, and GUI development.
 
 ---
+
+## Screenshots
+
+### Quick Search
+![Quick Search](screenshots/01_quick_search.png)
+
+### Social Shortcuts
+![Social Shortcuts](screenshots/02_social_shortcuts.png)
+
+### Weather
+![Weather](screenshots/03_weather.png)
+
+### Web Downloader
+![Web Downloader](screenshots/04_web_downloader.png)
+
+### Link Checker
+![Link Checker](screenshots/05_link_checker.png)
+
+### History
+![History](screenshots/06_history.png)
 
 ## Features
 
 The application currently includes:
 
 - Quick Search  
-  Search directly on Google, YouTube, GitHub, or Google Maps.
+Search directly on Google, YouTube, GitHub, or Google Maps.
 
 - Social Shortcuts  
-  One-click access to commonly used websites like LinkedIn, GitHub, Instagram, Facebook, and Twitter.
+One-click access to commonly used websites such as LinkedIn, GitHub, Instagram, Facebook, and Twitter.
 
 - Weather Tool  
-  Retrieve current weather information for a city.
+Retrieve current weather information for a city.
 
 - Web Downloader  
-  Download:
-  - Full HTML pages
-  - All links from a page
-  - Images from a page
+Download:
+- Full HTML pages
+- All links from a page
+- Images from a page
 
 - Link Checker  
-  Scan a webpage and detect broken links (404 errors).
+Scan a webpage and detect broken links (404 errors).
 
 ---
 
@@ -93,19 +113,20 @@ Internet connection required for web tools
 Libraries used:
 - requests
 - beautifulsoup4
+- python-docx
+- reportlab
 - tkinter (built into Python)
 
 ---
 
-## Purpose of the Project
-
-This project was created to practice and demonstrate:
+## What This Project Demonstrates
 
 - Modular program design
 - GUI development with Tkinter
 - HTTP requests and web scraping
 - File handling and downloads
-- Clean project structure
+- Handling configuration and user history
+- Structuring a multi-module Python application
 
 ---
 
