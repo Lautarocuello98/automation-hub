@@ -28,7 +28,10 @@ class LinkCheckerTool(BaseTool):
             return ToolResult(False, err)
 
         base_url = params["url"].strip()
-        timeout = int(params.get("timeout", 10))
+        try:
+            timeout = max(1, int(params.get("timeout", 10)))
+        except (TypeError, ValueError):
+            timeout = 10
         show_errors = bool(params.get("show_errors", False))
 
         try:

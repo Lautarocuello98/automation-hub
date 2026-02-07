@@ -56,7 +56,10 @@ class WebDownloaderTool(BaseTool):
         url = params["url"].strip()
         mode = params.get("mode", "all")
         out_dir = Path(params.get("out_dir") or "downloads")
-        timeout = int(params.get("timeout", 12))
+        try:
+            timeout = max(1, int(params.get("timeout", 12)))
+        except (TypeError, ValueError):
+            timeout = 12
 
         out_dir.mkdir(parents=True, exist_ok=True)
 

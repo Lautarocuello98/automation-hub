@@ -1,23 +1,21 @@
 # Python
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
 *.pyd
 
-# Virtual environments
-venv/
+# venv
 .venv/
+venv/
+ENV/
 
-# Build files
-build/
-dist/
-*.spec
-
-# App data
-history.json
-downloads/
-
-# OS
+# OS / editor
 .DS_Store
 Thumbs.db
+.vscode/
+
+# App runtime files
 app.log
+history.json
+
+# Downloads / outputs (si tu app descarga cosas acá)
+downloads/

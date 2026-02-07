@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import webbrowser
 from typing import Any
+from urllib.parse import quote_plus
 
 from .types import Result
 from .errors import ValidationError
@@ -25,6 +26,6 @@ class QuickSearchTool:
             # fallback hardcoded
             base = "https://www.google.com/search?q={query}"
 
-        url = base.format(query=query.replace(" ", "+"))
+        url = base.format(query=quote_plus(query))
         webbrowser.open(url)
         return Result(True, f"Opened search on {engine}: {query}", {"url": url})

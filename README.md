@@ -1,9 +1,9 @@
 # Automation Hub
 
-Python desktop automation toolkit with GUI, modular tools, logging, and history tracking.
 
-A modular desktop automation application built with Python and Tkinter that integrates multiple practical tools in a single interface.  
-The goal of this project is to apply real-world automation techniques such as web requests, file handling, scraping, and GUI development.
+Desktop automation toolkit built with Python and Tkinter.  
+Includes web search, social shortcuts, weather lookup, link checker, and web downloader.
+
 
 ---
 
@@ -117,8 +117,14 @@ automation_hub/
 │   ├── quick_search.py
 │   ├── social_shortcuts.py
 │   ├── weather.py
-│   ├── web_downloader.py
+│   ├── web_downloader.py                 
 │   └── link_checker.py
+│
+│
+├── tests/
+│   ├── test_imports.py
+│   └──
+│
 │
 ├── app.py                # Main GUI application
 ├── config.json           # User configuration
@@ -126,12 +132,29 @@ automation_hub/
 ├── app.log               # Runtime logs
 ├── requirements.txt
 ├── README.md
-└── .gitignore
+|── .gitignore
+└── LICENSE
+
 ```
 
 ---
 
 ## Installation
+
+Installation:
+```
+python -m venv .venv
+```
+
+Windows (PowerShell):
+```
+.venv\Scripts\Activate.ps1
+```
+
+macOS/Linux:
+```
+source .venv/bin/activate
+```
 
 Install dependencies:
 
@@ -166,7 +189,11 @@ Example:
   "socials": {
     "GitHub": "https://github.com",
     "LinkedIn": "https://linkedin.com"
-  }
+  },
+  "search_engines": {
+    "Google": "https://www.google.com/search?q={query}"
+  },
+  "download_folder": "downloads"
 }
 ```
 
@@ -198,6 +225,10 @@ Used for:
 - Structuring a multi-module Python application  
 
 ---
+
+## License
+MIT (see LICENSE). 
+
 
 ## Author
 
