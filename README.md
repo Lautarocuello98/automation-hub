@@ -164,6 +164,32 @@ python -m pip install -r requirements.txt
 
 ---
 
+## Tests
+
+This project includes basic tests to verify:
+
+- Module imports
+- Tool contract behavior
+- Stability without requiring internet access
+
+Run tests locally:
+
+```
+python -m pip install pytest
+pytest
+```
+
+Test files are located in:
+
+```
+tests/
+├── test_imports.py
+└── test_tools_contract.py
+```
+
+---
+
+
 ## How to Run
 
 ```
