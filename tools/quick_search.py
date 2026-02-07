@@ -1,34 +1,30 @@
+from __future__ import annotations
+
 import webbrowser
-from urllib.parse import quote_plus
+from typing import Any
 
-from .base import BaseTool, ToolResult
+from .types import Result
+from .errors import ValidationError
 
 
-class QuickSearchTool(BaseTool):
-    name = "Quick Search"
-    description = "Open a search query in the browser using a selected engine."
+class QuickSearchTool:
+    description = "Open a web search in your browser using configured engines."
 
-    def __init__(self, search_engines: dict[str, str]):
-        self.search_engines = search_engines
+    def __init__(self, engines: dict[str, str]):
+        self.engines = engines
 
-    def validate(self, params: dict) -> str | None:
-        query = (params.get("query") or "").strip()
+    def run(self, params: dict[str, Any]) -> Result:
+        engine = str(params.get("engine", "")).strip()
+        query = str(params.get("query", "")).strip()
+
         if not query:
-            return "Please enter a search query."
+            raise ValidationError("Query is empty.")
 
-        engine = params.get("engine", "Google")
-        if engine not in self.search_engines:
-            return f"Unknown engine: {engine}"
-        return None
+        base = self.engines.get(engine) or self.engines.get("Google")
+        if not base:
+            # fallback hardcoded
+            base = "https://www.google.com/search?q={query}"
 
-    def run(self, params: dict) -> ToolResult:
-        err = self.validate(params)
-        if err:
-            return ToolResult(False, err)
-
-        engine = params.get("engine", "Google")
-        query = params.get("query").strip()
-        url = self.search_engines[engine].format(query=quote_plus(query))
-
+        url = base.format(query=query.replace(" ", "+"))
         webbrowser.open(url)
-        return ToolResult(True, f"Opened {engine} search for: {query}", {"url": url})
+        return Result(True, f"Opened search on {engine}: {query}", {"url": url})
