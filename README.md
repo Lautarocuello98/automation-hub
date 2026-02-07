@@ -133,7 +133,8 @@ automation_hub/
 ├── requirements.txt
 ├── README.md
 |── .gitignore
-└── LICENSE
+|── LICENSE
+└── pytest.ini
 
 ```
 

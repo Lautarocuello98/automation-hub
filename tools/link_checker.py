@@ -36,7 +36,10 @@ class LinkCheckerTool(BaseTool):
 
         try:
             page = requests.get(base_url, timeout=timeout, headers={"User-Agent": "AutomationHub/1.0"})
-            page.raise_for_status()
+            if hasattr(page, "raise_for_status"):
+                page.raise_for_status()
+            elif getattr(page, "status_code", 200) >= 400:
+                return ToolResult(False, f"Error accessing the page: HTTP {page.status_code}")
         except requests.RequestException as e:
             return ToolResult(False, f"Error accessing the page: {e}")
 
