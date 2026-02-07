@@ -123,7 +123,7 @@ automation_hub/
 │
 ├── tests/
 │   ├── test_imports.py
-│   └──
+│   └── test_tools_contract.py
 │
 │
 ├── app.py                # Main GUI application
