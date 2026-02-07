@@ -1,6 +1,6 @@
 # Automation Hub
 
-Automation Hub is a desktop application built with Python that combines multiple practical automation tools in one place.  
+A modular desktop automation application built with Python and Tkinter that combines multiple practical tools in one place.  
 The goal of this project is to apply real-world automation techniques such as web requests, file handling, scraping, and GUI development.
 
 ---
@@ -25,32 +25,46 @@ The goal of this project is to apply real-world automation techniques such as we
 ### History
 ![History](screenshots/06_history.png)
 
+---
+
 ## Features
 
 The application currently includes:
 
-- Quick Search  
+### Quick Search
 Search directly on Google, YouTube, GitHub, or Google Maps.
 
-- Social Shortcuts  
+### Social Shortcuts
 One-click access to commonly used websites such as LinkedIn, GitHub, Instagram, Facebook, and Twitter.
 
-- Weather Tool  
+### Weather Tool
 Retrieve current weather information for a city.
 
-- Web Downloader  
+### Web Downloader
 Download:
-- Full HTML pages
-- All links from a page
-- Images from a page
+- Full HTML pages  
+- All links from a page  
+- Images from a page  
 
-- Link Checker  
+### Link Checker
 Scan a webpage and detect broken links (404 errors).
+
+---
+
+## Technologies Used
+
+- Python  
+- Tkinter  
+- Requests  
+- BeautifulSoup  
+- JSON  
+- Modular project structure  
 
 ---
 
 ## Project Structure
 
+```
 Automation_hub/
 │
 ├── app.py
@@ -65,6 +79,7 @@ Automation_hub/
     ├── weather.py
     ├── web_downloader.py
     └── link_checker.py
+```
 
 ---
 
@@ -72,7 +87,9 @@ Automation_hub/
 
 Install dependencies:
 
+```bash
 python -m pip install -r requirements.txt
+```
 
 ---
 
@@ -80,7 +97,9 @@ python -m pip install -r requirements.txt
 
 From the project folder:
 
+```bash
 python app.py
+```
 
 The graphical interface will open automatically.
 
@@ -88,45 +107,34 @@ The graphical interface will open automatically.
 
 ## Configuration
 
-You can edit config.json to customize:
+You can edit `config.json` to customize:
 
-- Social media shortcuts
-- Search engines
-- Default download folder
+- Social media shortcuts  
+- Search engines  
+- Default download folder  
 
 Example:
 
+```json
 {
   "socials": {
     "GitHub": "https://github.com",
     "LinkedIn": "https://linkedin.com"
   }
 }
-
----
-
-## Requirements
-
-Python 3.10 or newer recommended  
-Internet connection required for web tools
-
-Libraries used:
-- requests
-- beautifulsoup4
-- python-docx
-- reportlab
-- tkinter (built into Python)
+```
 
 ---
 
 ## What This Project Demonstrates
 
-- Modular program design
-- GUI development with Tkinter
-- HTTP requests and web scraping
-- File handling and downloads
-- Handling configuration and user history
-- Structuring a multi-module Python application
+- Modular program design  
+- GUI development with Tkinter  
+- HTTP requests and web scraping  
+- File handling and downloads  
+- Configuration management  
+- Handling user history and logging  
+- Structuring a multi-module Python application  
 
 ---
 
