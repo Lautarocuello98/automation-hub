@@ -1,0 +1,12 @@
+# PyInstaller
+build/
+dist/
+*.spec
+
+# Python cache
+__pycache__/
+*.pyc
+
+# App generated files
+history.json
+downloads/

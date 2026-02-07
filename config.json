@@ -1,0 +1,17 @@
+{
+  "socials": {
+    "YouTube": "https://www.youtube.com",
+    "GitHub": "https://github.com",
+    "LinkedIn": "https://www.linkedin.com",
+    "Instagram": "https://www.instagram.com",
+    "Facebook": "https://www.facebook.com",
+    "Twitter": "https://twitter.com"
+  },
+  "search_engines": {
+    "Google": "https://www.google.com/search?q={query}",
+    "Google Maps": "https://www.google.com/maps/search/{query}",
+    "YouTube": "https://www.youtube.com/results?search_query={query}",
+    "GitHub": "https://github.com/search?q={query}"
+  },
+  "download_folder": "downloads"
+}
