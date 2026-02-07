@@ -1,12 +1,22 @@
-# PyInstaller
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Virtual environments
+venv/
+.venv/
+
+# Build files
 build/
 dist/
 *.spec
 
-# Python cache
-__pycache__/
-*.pyc
-
-# App generated files
+# App data
 history.json
 downloads/
+
+# OS
+.DS_Store
+Thumbs.db
