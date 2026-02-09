@@ -91,8 +91,8 @@ Individual Tools (tools/)
 ```
 
 Each tool:
-- Implements a common interface  
-- Returns standardized results  
+- Implements a common `Tool` contract (`run(params) -> Result`)  
+- Uses predictable `ToolError` exceptions for validation/network failures    
 - Handles its own logic independently  
 
 This allows:

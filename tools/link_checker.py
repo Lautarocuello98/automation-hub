@@ -1,19 +1,17 @@
-import requests
-from bs4 import BeautifulSoup
+from __future__ import annotations
+
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
-from .base import BaseTool, ToolResult
+
+import requests
+from bs4 import BeautifulSoup
+from .errors import NetworkError, ValidationError
+from .types import Result
 
 
-class LinkCheckerTool(BaseTool):
-    name = "Link Checker"
+class LinkCheckerTool:
     description = "Scan a webpage and report broken links (404)."
-
-    def validate(self, params: dict) -> str | None:
-        url = (params.get("url") or "").strip()
-        if not url:
-            return "Please enter a URL."
-        return None
 
     def _is_http_url(self, u: str) -> bool:
         try:
@@ -22,12 +20,11 @@ class LinkCheckerTool(BaseTool):
         except Exception:
             return False
 
-    def run(self, params: dict) -> ToolResult:
-        err = self.validate(params)
-        if err:
-            return ToolResult(False, err)
+    def run(self, params: dict[str, Any]) -> Result:
+        base_url = str(params.get("url", "")).strip()
+        if not base_url:
+            raise ValidationError("Please enter a URL.")
 
-        base_url = params["url"].strip()
         try:
             timeout = max(1, int(params.get("timeout", 10)))
         except (TypeError, ValueError):
@@ -36,12 +33,10 @@ class LinkCheckerTool(BaseTool):
 
         try:
             page = requests.get(base_url, timeout=timeout, headers={"User-Agent": "AutomationHub/1.0"})
-            if hasattr(page, "raise_for_status"):
-                page.raise_for_status()
-            elif getattr(page, "status_code", 200) >= 400:
-                return ToolResult(False, f"Error accessing the page: HTTP {page.status_code}")
+            page.raise_for_status()
+
         except requests.RequestException as e:
-            return ToolResult(False, f"Error accessing the page: {e}")
+            raise NetworkError(f"Error accessing the page: {e}") from e
 
         soup = BeautifulSoup(page.text, "html.parser")
         anchors = soup.find_all("a")
@@ -56,7 +51,6 @@ class LinkCheckerTool(BaseTool):
                 continue
             href = href.strip()
 
-            # skip anchors and non-web schemes
             if href.startswith("#"):
                 continue
             if href.startswith(("mailto:", "tel:", "javascript:", "data:")):
@@ -78,7 +72,7 @@ class LinkCheckerTool(BaseTool):
         msg_lines = [
             f"Scanned: {base_url}",
             f"Links found: {len(anchors)} | HTTP links checked: {checked}",
-            f"Broken (404): {len(broken_404)}"
+            f"Broken (404): {len(broken_404)}",
         ]
 
         if broken_404:
@@ -91,4 +85,4 @@ class LinkCheckerTool(BaseTool):
             msg_lines.append("Other errors:")
             msg_lines.extend([f"- {x}" for x in other_errors])
 
-        return ToolResult(True, "\n".join(msg_lines), {"broken_404": broken_404, "other_errors": other_errors})
+        return Result(True, "\n".join(msg_lines), {"broken_404": broken_404, "other_errors": other_errors})

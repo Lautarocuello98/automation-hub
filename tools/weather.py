@@ -1,24 +1,21 @@
+from __future__ import annotations
+
+from typing import Any
+
 import requests
 
-from .base import BaseTool, ToolResult
+from .errors import NetworkError, ValidationError
+from .types import Result
 
 
-class WeatherTool(BaseTool):
-    name = "Weather"
+class WeatherTool:
     description = "Get current weather for a city (uses wttr.in JSON, no API key)."
 
-    def validate(self, params: dict) -> str | None:
-        city = (params.get("city") or "").strip()
+    def run(self, params: dict[str, Any]) -> Result:
+        city = str(params.get("city", "")).strip()
         if not city:
-            return "Please enter a city."
-        return None
+            raise ValidationError("Please enter a city.")
 
-    def run(self, params: dict) -> ToolResult:
-        err = self.validate(params)
-        if err:
-            return ToolResult(False, err)
-
-        city = params["city"].strip()
         url = f"https://wttr.in/{city}?format=j1"
 
         try:
@@ -37,9 +34,9 @@ class WeatherTool(BaseTool):
                 f"{city} | {desc}\n"
                 f"Temp: {temp_c}°C (feels {feels_c}°C) | Humidity: {humidity}% | Wind: {wind_kmph} km/h"
             )
-            return ToolResult(True, msg, {"city": city, "raw": data})
+            return Result(True, msg, {"city": city, "raw": data})
 
         except requests.RequestException as e:
-            return ToolResult(False, f"Weather request failed: {e}")
-        except ValueError:
-            return ToolResult(False, "Weather response was not valid JSON.")
+            raise NetworkError(f"Weather request failed: {e}") from e
+        except ValueError as e:
+            raise NetworkError("Weather response was not valid JSON.") from e

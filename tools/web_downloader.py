@@ -1,28 +1,20 @@
+from __future__ import annotations
+
 import os
 import re
 from pathlib import Path
+from typing import Any
 from urllib.parse import urljoin, urlparse
 
 import requests
 from bs4 import BeautifulSoup
 
-from .base import BaseTool, ToolResult
+from .errors import NetworkError, ValidationError
+from .types import Result
 
 
-class WebDownloaderTool(BaseTool):
-    name = "Web Downloader"
+class WebDownloaderTool:
     description = "Download a page HTML, extract links, and/or download images."
-
-    def validate(self, params: dict) -> str | None:
-        url = (params.get("url") or "").strip()
-        if not url:
-            return "Please enter a URL."
-
-        mode = params.get("mode", "all")
-        if mode not in ("html", "links", "images", "all"):
-            return "Mode must be one of: html, links, images, all."
-
-        return None
 
     def _safe_name(self, text: str) -> str:
         text = text.strip().lower()
@@ -48,13 +40,16 @@ class WebDownloaderTool(BaseTool):
             return ".gif"
         return ""
 
-    def run(self, params: dict) -> ToolResult:
-        err = self.validate(params)
-        if err:
-            return ToolResult(False, err)
+    def run(self, params: dict[str, Any]) -> Result:
+        url = str(params.get("url", "")).strip()
+        if not url:
+            raise ValidationError("Please enter a URL.")
 
-        url = params["url"].strip()
-        mode = params.get("mode", "all")
+        mode = str(params.get("mode", "all"))
+        if mode not in ("html", "links", "images", "all"):
+            raise ValidationError("Mode must be one of: html, links, images, all.")
+
+
         out_dir = Path(params.get("out_dir") or "downloads")
         try:
             timeout = max(1, int(params.get("timeout", 12)))
@@ -67,7 +62,7 @@ class WebDownloaderTool(BaseTool):
             r = requests.get(url, timeout=timeout, headers={"User-Agent": "AutomationHub/1.0"})
             r.raise_for_status()
         except requests.RequestException as e:
-            return ToolResult(False, f"Request failed: {e}")
+            raise NetworkError(f"Request failed: {e}") from e
 
         html = r.text
         soup = BeautifulSoup(html, "html.parser")
@@ -80,14 +75,12 @@ class WebDownloaderTool(BaseTool):
         saved = {"html": None, "links": None, "images": 0}
         notes: list[str] = []
 
-        # 1) Save HTML
         if mode in ("html", "all"):
             html_path = page_folder / "page.html"
             html_path.write_text(html, encoding="utf-8", errors="ignore")
             saved["html"] = str(html_path)
             notes.append(f"Saved HTML: {html_path}")
 
-        # 2) Extract links
         if mode in ("links", "all"):
             links = []
             for a in soup.find_all("a"):
@@ -103,7 +96,6 @@ class WebDownloaderTool(BaseTool):
                 if self._is_http_url(full):
                     links.append(full)
 
-            # dedupe while preserving order
             seen = set()
             unique_links = []
             for x in links:
@@ -116,7 +108,6 @@ class WebDownloaderTool(BaseTool):
             saved["links"] = str(links_path)
             notes.append(f"Saved links: {links_path} ({len(unique_links)} links)")
 
-        # 3) Download images
         if mode in ("images", "all"):
             images_folder = page_folder / "images"
             images_folder.mkdir(parents=True, exist_ok=True)
@@ -133,7 +124,6 @@ class WebDownloaderTool(BaseTool):
                 if self._is_http_url(full):
                     img_urls.append(full)
 
-            # dedupe
             img_urls = list(dict.fromkeys(img_urls))
 
             count = 0
@@ -158,4 +148,4 @@ class WebDownloaderTool(BaseTool):
         msg = "\n".join(
             ["Web download complete.", f"Base URL: {url}", f"Output: {page_folder}", ""] + notes
         )
-        return ToolResult(True, msg, saved)
+        return Result(True, msg, saved)

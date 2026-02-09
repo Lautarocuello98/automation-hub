@@ -1,29 +1,25 @@
+from __future__ import annotations
+
 import webbrowser
+from typing import Any
 
-from .base import BaseTool, ToolResult
+from .errors import ValidationError
+from .types import Result
 
 
-class SocialShortcutsTool(BaseTool):
-    name = "Social Shortcuts"
+class SocialShortcutsTool:
     description = "Open a configured social/network shortcut in the browser."
 
     def __init__(self, socials: dict[str, str]):
         self.socials = socials
 
-    def validate(self, params: dict) -> str | None:
-        platform = params.get("platform")
+    def run(self, params: dict[str, Any]) -> Result:
+        platform = str(params.get("platform", "")).strip()
         if not platform:
-            return "Choose a platform."
+            raise ValidationError("Choose a platform.")
         if platform not in self.socials:
-            return f"Unknown platform: {platform}"
-        return None
+            raise ValidationError(f"Unknown platform: {platform}")
 
-    def run(self, params: dict) -> ToolResult:
-        err = self.validate(params)
-        if err:
-            return ToolResult(False, err)
-
-        platform = params["platform"]
         url = self.socials[platform]
         webbrowser.open(url)
-        return ToolResult(True, f"Opened: {platform}", {"url": url})
+        return Result(True, f"Opened: {platform}", {"url": url})
