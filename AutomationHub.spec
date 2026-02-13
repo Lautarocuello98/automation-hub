@@ -33,9 +33,8 @@ exe = EXE(
     console=False,
 )
 
-# ----- macOS build (.app) -----
 if sys.platform == "darwin":
-
+    # macOS: el output final es el .app (BUNDLE). NO usar COLLECT con BUNDLE.
     app = BUNDLE(
         exe,
         a.binaries,
@@ -45,21 +44,8 @@ if sys.platform == "darwin":
         icon=None,
         bundle_identifier=None,
     )
-
-    coll = COLLECT(
-        exe,   # ← importante: exe también acá
-        app,
-        a.binaries,
-        a.zipfiles,
-        a.datas,
-        strip=False,
-        upx=True,
-        name="AutomationHub",
-    )
-
-# ----- Windows/Linux build -----
 else:
-
+    # Windows/Linux: onedir normal
     coll = COLLECT(
         exe,
         a.binaries,
