@@ -26,3 +26,4 @@ dist
 app.log
 history.json
 downloads/
+__pycache__
