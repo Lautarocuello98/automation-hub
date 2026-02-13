@@ -20,3 +20,9 @@ history.json
 
 # Downloads / outputs (si tu app descarga cosas acá)
 downloads/
+build
+dist
+*.pyc
+app.log
+history.json
+downloads/

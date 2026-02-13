@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import sys
 from dataclasses import dataclass, asdict
 from datetime import datetime
@@ -22,20 +23,39 @@ from tools import (
     ToolError,
 )
 
+# ---------------- Paths (works for source + PyInstaller) ----------------
 
-# ---------------- Paths (work for source + exe) ----------------
-
-def get_app_dir() -> Path:
-    if getattr(sys, "frozen", False):
-        return Path(sys.executable).resolve().parent
+def resource_dir() -> Path:
+    """
+    Where bundled read-only files live.
+    - Dev: repo folder
+    - PyInstaller: sys._MEIPASS (temp extraction dir)
+    """
+    if getattr(sys, "frozen", False) and hasattr(sys, "_MEIPASS"):
+        return Path(sys._MEIPASS)
     return Path(__file__).resolve().parent
 
 
-APP_DIR = get_app_dir()
-CONFIG_PATH = APP_DIR / "config.json"
-HISTORY_PATH = APP_DIR / "history.json"
-LOG_PATH = APP_DIR / "app.log"
+def user_data_dir(app_name: str = "AutomationHub") -> Path:
+    """
+    Where we write user data (logs/history/downloads).
+    """
+    if sys.platform == "darwin":
+        base = Path.home() / "Library" / "Application Support"
+    elif sys.platform.startswith("win"):
+        base = Path(os.environ.get("APPDATA", str(Path.home())))
+    else:
+        base = Path(os.environ.get("XDG_DATA_HOME", str(Path.home() / ".local" / "share")))
+    return base / app_name
 
+
+RESOURCE_DIR = resource_dir()
+DATA_DIR = user_data_dir()
+DATA_DIR.mkdir(parents=True, exist_ok=True)
+
+CONFIG_PATH = RESOURCE_DIR / "config.json"   # read-only bundled file
+HISTORY_PATH = DATA_DIR / "history.json"     # writable
+LOG_PATH = DATA_DIR / "app.log"              # writable
 
 # ---------------- Logging ----------------
 
@@ -50,10 +70,8 @@ def setup_logging() -> None:
         ],
     )
 
-
 setup_logging()
 log = logging.getLogger("automation_hub")
-
 
 # ---------------- Models ----------------
 
@@ -87,7 +105,6 @@ class HistoryEvent:
     ok: bool
     message: str
     data: dict[str, Any]
-
 
 # ---------------- Config IO ----------------
 
@@ -125,7 +142,6 @@ def safe_params(tool_name: str, params: dict[str, Any]) -> dict[str, Any]:
         p = {"platform": p.get("platform")}
 
     return p
-
 
 # ---------------- History Store ----------------
 
@@ -191,7 +207,6 @@ class HistoryStore:
         del items[target]
         self.save(items)
 
-
 # ---------------- App ----------------
 
 class AutomationHubApp(tk.Tk):
@@ -238,7 +253,7 @@ class AutomationHubApp(tk.Tk):
         self._build_layout()
         self._select_tool("Quick Search")
 
-        log.info("App started in %s", APP_DIR)
+        log.info("App started. resource_dir=%s data_dir=%s", RESOURCE_DIR, DATA_DIR)
 
     # ---------------- UI Layout ----------------
 
@@ -406,6 +421,9 @@ class AutomationHubApp(tk.Tk):
             log.exception("History append failed: %s", e)
 
         return result
+
+    # ---------------- Panels ----------------
+    # (El resto de tu código queda exactamente igual a como lo tenías)
 
     # ---------------- Panels ----------------
 
