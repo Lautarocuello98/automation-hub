@@ -29,6 +29,9 @@ Includes web search, social shortcuts, weather lookup, link checker, and web dow
 
 ---
 
+## Download the latest version:
+https://github.com/Lautarocuello98/automation-hub/releases/latest
+
 ## Features
 
 ### Quick Search
