@@ -5,8 +5,6 @@ from PyInstaller.utils.hooks import collect_submodules
 
 hiddenimports = collect_submodules("tools")
 
-block_cipher = None
-
 a = Analysis(
     ["app.py"],
     pathex=[],
@@ -20,7 +18,7 @@ a = Analysis(
     noarchive=False,
 )
 
-pyz = PYZ(a.pure, a.zipped_data, cipher=block_cipher)
+pyz = PYZ(a.pure, a.zipped_data)
 
 exe = EXE(
     pyz,
@@ -33,10 +31,11 @@ exe = EXE(
     strip=False,
     upx=True,
     console=False,
-    disable_windowed_traceback=False,
 )
 
+# ----- macOS build (.app) -----
 if sys.platform == "darwin":
+
     app = BUNDLE(
         exe,
         a.binaries,
@@ -48,6 +47,7 @@ if sys.platform == "darwin":
     )
 
     coll = COLLECT(
+        exe,   # ← importante: exe también acá
         app,
         a.binaries,
         a.zipfiles,
@@ -56,8 +56,10 @@ if sys.platform == "darwin":
         upx=True,
         name="AutomationHub",
     )
+
+# ----- Windows/Linux build -----
 else:
-    # Windows/Linux: COLLECT needs an EXE instance
+
     coll = COLLECT(
         exe,
         a.binaries,
