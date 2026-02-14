@@ -422,8 +422,6 @@ class AutomationHubApp(tk.Tk):
 
         return result
 
-    # ---------------- Panels ----------------
-    # (El resto de tu código queda exactamente igual a como lo tenías)
 
     # ---------------- Panels ----------------
 
